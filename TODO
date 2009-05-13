@@ -1,0 +1,11 @@
+
+- Add tests for TagGrep
+
+- Document TagGrep
+
+- Send TagGrep off to CPAN
+
+- Change over internal storage of TagGrep tags from an array to a hash
+  - This will prevent duplicates and provide an easy way to remove tags
+    from the group being watched
+
