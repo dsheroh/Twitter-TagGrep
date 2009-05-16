@@ -1,15 +1,17 @@
-package TagGrep;
+package Twitter::TagGrep;
 
 use strict;
 use warnings;
 
-our $VERSION = '0.0001';
+our $VERSION = '1.0000';
 
 sub prefix {
   my $self = shift;
 
-  $self->{prefix} = $_[0] if defined $_[0];
-  $self->{tag_regex} = '';
+  if (defined $_[0]) {
+    $self->{prefix} = $_[0];
+    undef $self->{tag_regex};
+  }
   return $self->{prefix};
 }
 
@@ -17,7 +19,7 @@ sub add_prefix {
   my $self = shift;
 
   $self->{prefix} = join '', $self->{prefix}, @_;
-  $self->{tag_regex} = '';
+  undef $self->{tag_regex};
   return $self->{prefix};
 }
 
@@ -30,7 +32,7 @@ sub tags {
     } else {
       $self->{tags} = [ @_ ];
     }
-    $self->{tag_regex} = '';
+    undef $self->{tag_regex};
   }
 
   return @{$self->{tags}};
@@ -47,7 +49,7 @@ sub add_tag {
     }
   }
 
-  $self->{tag_regex} = '';
+  undef $self->{tag_regex};
   return @{$self->{tags}};
 }
 
@@ -70,11 +72,12 @@ sub new {
 
   my $self = {
               prefix    => defined $params{prefix} ? $params{prefix} : '#',
-              tag_regex => '',
+              tags      => [],
+              tag_regex => undef,
              };
   bless $self, $class;
 
-  $self->tags($params{tags});
+  $self->tags($params{tags}) if $params{tags};
 
   return $self;
 }
