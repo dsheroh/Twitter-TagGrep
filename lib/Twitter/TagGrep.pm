@@ -93,34 +93,97 @@ sub _gen_tag_regex {
 
 =head1 NAME
 
-Twitter::TagGrep - The great new Twitter::TagGrep!
+Twitter::TagGrep - Find messages with selected tags in Twitter timelines
 
 =head1 VERSION
 
-Version 0.01
+Version 1.00
 
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Twitter::TagGrep;
+    use Net::Twitter;
 
-    my $foo = Twitter::TagGrep->new();
-    ...
+    my $twit = Net::Twitter->new( ... );
 
-=head1 EXPORT
+    my $tg = Twitter::TagGrep->new( prefix => '#!',
+                                    tags => [ 'foo', 'bar' ] );
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my $timeline = $twit->friends_timeline;
 
-=head1 FUNCTIONS
+    # Get tweets containing one or more of #foo, #bar, !foo, or !bar
+    my @matches = $tg->grep_tags($timeline);
 
-=head2 function1
+    for my $tweet (@matches) {
+      print $tweet->{text}, "\n", join(', ', @{$tweet->{tags}}), "\n";
+    }
 
-=head2 function2
+=head1 METHODS
+
+=over
+
+=item C<new>
+
+Initializes and returns a new Twitter::TagGrep object.
+
+Takes the following optional parameters:
+
+=over
+
+=item C<prefix>
+
+A string defining the set of tag prefixes to recognize.  Defaults to '#'
+(hashtags) if not specified.
+
+=item C<tags>
+
+Either a single tag to search for or a reference to an array containing
+any number of tags to search for.
+
+=back
+
+=item C<prefix>
+
+If passed a parameter, replaces the set of recognized prefixes.
+
+Returns the set of recognized prefixes as a single string value.
+
+=item C<add_prefix>
+
+Appends all parameters to the set of recognized prefixes and returns that
+set.
+
+=item C<tags>
+
+If passed one or more parameters, sets the list of recognized tags.  Any
+array references will add the contents of the referenced array, while other
+parameters will be used as-is.
+
+Returns an array of recognized tags.
+
+=item C<add_tag>
+
+As C<tags>, but appends to the list of tags rather than replacing it.
+
+=item C<grep_tags>
+
+Takes a single scalar parameter referencing a Twitter timeline as returned
+by Net::Twitter's *_timeline functions.
+
+Returns an array of tweets found within that timeline which contain at least
+one instance of (any character found in the C<prefix> setting) followed by
+(any string listed in the C<tags> setting).  This check is case-insensitive.
+
+A list of tags found in each returned tweet is added to it under the "tags"
+hash key.
+
+The tag must normally stand alone as a word by itself, but can be matched as a
+substring by using regular expression metacharacters in C<tags> values.
+Wildcard searches may also be done in this fashion, such as using the value
+"\w+" to locate all tweets containing one or more tags.
+
+=back
 
 =head1 AUTHOR
 
@@ -140,6 +203,11 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
     perldoc Twitter::TagGrep
+
+
+The latest version of this module may be obtained from
+
+    git://sherohman.org/tag_grep
 
 
 You can also look for information at:
