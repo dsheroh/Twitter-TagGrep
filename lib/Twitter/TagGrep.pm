@@ -97,7 +97,7 @@ Twitter::TagGrep - Find messages with selected tags in Twitter timelines
 
 =head1 VERSION
 
-Version 1.00
+Version 1.0000
 
 
 =head1 SYNOPSIS
@@ -234,6 +234,8 @@ L<http://search.cpan.org/dist/Twitter-TagGrep/>
 
 
 =head1 ACKNOWLEDGEMENTS
+
+Thanks to Chris Thompson for L<Net::Twitter>.
 
 
 =head1 COPYRIGHT & LICENSE
